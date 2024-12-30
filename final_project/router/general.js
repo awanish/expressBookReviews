@@ -1,9 +1,12 @@
 const express = require("express");
+const axios = require("axios");
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
+
 const public_users = express.Router();
 
+const BASE_URL = "http://localhost:5000";
 public_users.post("/register", (req, res) => {
 	//Write your code here
 	const { username, password } = req.body;
@@ -68,6 +71,56 @@ public_users.get("/review/:isbn", function (req, res) {
 	const isbn = req.params.isbn;
 	const review = books[isbn]["reviews"];
 	return res.send(review);
+});
+
+public_users.get("/api/books", async (req, res) => {
+	try {
+		// Use Axios to fetch data from an external API
+		const response = await axios.get(`${BASE_URL}/`);
+		res.send(response.data); // Send the book data as the response
+	} catch (error) {
+		console.error("Error fetching book:", error.message);
+		res.status(500).send("Book not found");
+	}
+});
+
+public_users.get("/api/isbn/:isbn", async (req, res) => {
+	const isbn = req.params.isbn;
+
+	try {
+		// Use Axios to fetch data from an external API
+		const response = await axios.get(`${BASE_URL}/isbn/${isbn}`);
+		res.send(response.data); // Send the book data as the response
+	} catch (error) {
+		console.error("Error fetching book:", error.message);
+		res.status(500).send("Book not found");
+	}
+});
+
+public_users.get("/api/author/:author", async (req, res) => {
+	const author = req.params.author;
+
+	try {
+		// Use Axios to fetch data from an external API
+		const response = await axios.get(`${BASE_URL}/author/${author}`);
+		res.send(response.data); // Send the book data as the response
+	} catch (error) {
+		console.error("Error fetching book:", error.message);
+		res.status(500).send("Book not found");
+	}
+});
+
+public_users.get("/api/title/:title", async (req, res) => {
+	const title = req.params.title;
+
+	try {
+		// Use Axios to fetch data from an external API
+		const response = await axios.get(`${BASE_URL}/title/${title}`);
+		res.send(response.data); // Send the book data as the response
+	} catch (error) {
+		console.error("Error fetching book:", error.message);
+		res.status(500).send("Book not found");
+	}
 });
 
 module.exports.general = public_users;
